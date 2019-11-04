@@ -3,7 +3,8 @@ package main
 import (
 	 "net/http"
      "fmt"
-    //  "io/ioutil"
+    "io"
+    "os"
     //  "encoding/json"
      "database/sql"
     // "github.com/gin-gonic/gin"
@@ -22,34 +23,37 @@ type User struct{
     Name        string  `json:"name"`
     Password    string  `json:"password"`
 }
-func zhuce(c echo.Context) error {
+func zhuce(c echo.Context) (err error) {
 
         // var userinfo User
-        name := c.FormValue("name")
-        password := c.FormValue("password")
+        user:=new(User)
+        if err = c.Bind(user); err != nil {
+            return c.JSON(http.StatusOK, "数据错误")
+        }
+        // fmt.Println(user.Name,user.Password)
         db,_:=sql.Open("mysql","root:xfz123456@(127.0.0.1:3306)/goblin") // 设置连接数据库的参数
         defer db.Close()    //关闭数据库
-        err:=db.Ping()      //连接数据库
+        err=db.Ping()      //连接数据库
         if err!=nil{
             fmt.Println("数据库连接失败")
             return c.JSON(http.StatusOK, "数据库连接失败")
         }
         id := time.Now().Unix()
-        db.Exec("insert into userinfo(id,name,password) values (?,?,?)",id,name,password)     
+        db.Exec("insert into userinfo(id,name,password) values (?,?,?)",id,user.Name,user.Password)     
         fmt.Println("注册成功！")
         resp := map[string]string{"message": "注册成功！"}
         return c.JSON(http.StatusOK, resp)
-    
-	
     
 }
 
 func denglu(c echo.Context) error{
    
-    cookie,err :=c.Cookie("denglu")
+    cookie,err :=c.Cookie("token")
     if err != nil {
-	    name := c.FormValue("name")
-        user_password := c.FormValue("password")
+        user:=new(User)
+        if err = c.Bind(user); err != nil {
+            return c.JSON(http.StatusOK, "数据错误")
+        }
         db,_:=sql.Open("mysql","root:xfz123456@(127.0.0.1:3306)/goblin") // 设置连接数据库的参数
         defer db.Close()    //关闭数据库
         err:=db.Ping()      //连接数据库
@@ -59,17 +63,22 @@ func denglu(c echo.Context) error{
         }
         // id := time.Now().Unix()
         resp := map[string]string{"message": "登录失败！"}
-        result:=db.QueryRow("select password,id,userimage from userinfo where name=?",name)      //单行查询
+        result:=db.QueryRow("select password,id,userimage from userinfo where name=?",user.Name)      //单行查询
         var password,id,userimage string
         result.Scan(&password,&id,&userimage)
         // fmt.Println(result)
-        if user_password == password {
+        if user.Password == password {
             tokenString, err := createJwt(id)
         if err != nil {
             fmt.Println(err.Error())
             return c.JSON(http.StatusOK, "数据库连接失败")
-        }
-            resp = map[string]string{"message": "登录成功！","name":name,"token":tokenString,"userimage":userimage}
+        }   
+        cookie := new(http.Cookie)
+        cookie.Name = "token"
+        cookie.Value = tokenString
+        cookie.Expires = time.Now().Add(24 * time.Hour)
+        c.SetCookie(cookie)
+        resp = map[string]string{"message": "登录成功！","name":user.Name,"userimage":userimage}
         }
         
        return c.JSON(http.StatusOK, resp)
@@ -95,6 +104,50 @@ func denglu(c echo.Context) error{
     }
     
 }
+func uploadImage(c echo.Context) error{
+    cookie,err :=c.Cookie("token")
+    if err != nil {return c.JSON(http.StatusOK, "wrong")}else{
+    act :=c.QueryParam("act")
+    if act =="avator" {
+        file, err := c.FormFile("img")
+        if err != nil {
+            return err
+        }
+        src, err := file.Open()
+        if err != nil {
+            return err
+        }
+        defer src.Close()
+    
+        // Destination
+        dst, err := os.Create("./avator/"+file.Filename)
+        if err != nil {
+            return err
+        }
+        defer dst.Close()
+        // Copy
+        if _, err = io.Copy(dst, src); err != nil {
+            return err
+        }else{
+            db,_:=sql.Open("mysql","root:xfz123456@(127.0.0.1:3306)/goblin") // 设置连接数据库的参数
+            defer db.Close()    //关闭数据库
+            err=db.Ping()      //连接数据库
+            if err!=nil{
+                fmt.Println("数据库连接失败")
+                return c.JSON(http.StatusOK, "数据库连接失败")
+            }
+            imageUrl :="/avator/"+file.Filename
+            claims := parseJwt(cookie.Value)
+            user_id  := claims["user_id"]
+            db.Exec("update userinfo set userimage=? where id=?",imageUrl,user_id)      
+            return c.JSON(http.StatusOK, "上传成功！")
+        }
+    }else if act=="card"{
+        
+   }
+   return c.JSON(http.StatusOK, "wrong")
+    }
+}
 func main() {
     	
    
@@ -106,6 +159,7 @@ func main() {
       }))
     e.POST("/zhuce", zhuce)
     e.POST("/denglu", denglu)
+    e.POST("uploadImage",uploadImage)
 	e.Logger.Fatal(e.Start(":8000"))
     
 }
