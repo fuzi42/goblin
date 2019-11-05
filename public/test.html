@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="test()">sadfasdfsa</button>
+
+</body>
+<script>
+    function test(){
+        fetch('https//example.billyzou.com/post', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringfy({"name":"test","age":"123456"}), // "{"name":"Billy","age":18}"
+        }).then(data=>{
+            
+        })
+
+    }
+</script>
+</html>
