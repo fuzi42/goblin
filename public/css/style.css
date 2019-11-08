@@ -1,0 +1,87 @@
+button{
+    background:#f4433680;
+    border-radius: 8px;
+    border:none;
+    color:white;
+    padding: 1px 10px;
+}
+.font-design {
+				font-family: "ziti";
+			}
+@font-face {
+				font-family: ziti;
+				src: url("ziti.ttf");
+}
+.map{
+  width:1000px;
+  position:relative;
+  list-style:none;
+  padding:0;
+  margin:0;
+  display:inline-block;
+  line-height:60px;
+  /* margin-left:300px; */
+}
+.map li{
+  position:relative;
+  margin:0 15px 0 40px;
+  cursor:pointer;
+  display:inline-block;
+  font-family:"ziti";
+  font-weight: bolder;
+  font-size:20px;
+
+}
+.map li:hover{
+  color: #f3a28b
+}
+p{
+  letter-spacing: 1px
+}
+.meta-list {
+    position: relative;
+    width: 100%;
+    border-top: 1px solid #e7e7e7;
+    border-bottom: 1px solid #e7e7e7;
+    margin-top: 52px;
+    text-align: center;
+}
+.meta-list li {
+    position: relative;
+    display: inline-block;
+    width: 33%;
+    padding: 14px 0px 11px 0px;
+    border-right: 1px solid #e7e7e7;
+    font-size: 12px;
+    color: #999999;
+    font-weight: 400;
+    line-height: 21px;
+}
+.meta-list li a {
+    font-size: 12px;
+    color: #999999;
+    text-transform: uppercase;
+    font-weight: 400;
+    line-height: 21px;
+}
+.social-style-one{
+  padding-inline-start:0;
+  text-align:center;
+}
+.social-style-one li {
+  display: inline-block;
+  margin-right: 6px;
+}
+.social-style-one li a {
+  position: relative;
+  display: inline-block;
+  width: 45px;
+  height: 45px;
+  line-height: 45px;
+  border: 1px solid #656565;
+  border-radius: 50%;
+  text-align: center;
+  color: #dddddd;
+  background: transparent;
+  transition: all 900ms ease;
+}

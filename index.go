@@ -12,18 +12,20 @@ import (
     "github.com/labstack/echo/middleware"
     _ "github.com/go-sql-driver/mysql"
     "time"
-//  "strings"
+    // "strings"
     "github.com/dgrijalva/jwt-go"
     )
 var (
 	SIGN_NAME_SCERET = "aweQurt178BNI"
 )
-
+//用户结构
 type User struct{
     Name        string  `json:"name"`
     Password    string  `json:"password"`
 }
+
 type Card struct{
+    Id          string  `json:"id"`
     Title       string  `json:"title"`
     Images      string  `json:"images"`
     Message     string  `json:"message"`
@@ -36,7 +38,7 @@ func zhuce(c echo.Context) (err error) {
         if err = c.Bind(user); err != nil {
             return c.JSON(http.StatusOK, "数据错误")
         }
-        // fmt.Println(user.Name,user.Password)
+        fmt.Println(user.Name,user.Password)
         db,err:=opendb(c)      //连接数据库
         if err!=nil {
             return err
@@ -45,7 +47,7 @@ func zhuce(c echo.Context) (err error) {
         id := time.Now().Unix()
         db.Exec("insert into userinfo(id,name,password) values (?,?,?)",id,user.Name,user.Password)     
         fmt.Println("注册成功！")
-        resp := map[string]string{"message": "注册成功！"}
+        resp :=map[string]string{"message": "注册成功！"}
         return c.JSON(http.StatusOK, resp)
     
 }
@@ -53,6 +55,7 @@ func zhuce(c echo.Context) (err error) {
 func denglu(c echo.Context) error{
    
     cookie,err :=c.Cookie("token")
+    fmt.Println(cookie)
     if err != nil {
         user:=new(User)
         if err = c.Bind(user); err != nil {
@@ -75,12 +78,13 @@ func denglu(c echo.Context) error{
             fmt.Println(err.Error())
             return c.JSON(http.StatusOK, "token生成失败")
         }   
-        cookie := new(http.Cookie)
-        cookie.Name = "token"
-        cookie.Value = tokenString
-        cookie.Expires = time.Now().Add(24 * time.Hour)
-        c.SetCookie(cookie)
-        resp = map[string]string{"message": "登录成功！","name":user.Name,"userimage":userimage,"user_id":id}
+        //因为跨域无法添加Cookie
+        // cookie := new(http.Cookie)
+        // cookie.Name = "token"
+        // cookie.Value = tokenString
+        // cookie.Expires = time.Now().Add(24 * time.Hour)
+        // c.SetCookie(cookie)
+        resp = map[string]string{"message": "登录成功！","name":user.Name,"userimage":userimage,"user_id":id,"token":tokenString}
         }
         
        return c.JSON(http.StatusOK, resp)
@@ -216,6 +220,91 @@ func release(c echo.Context) (err error) {
         return c.JSON(http.StatusOK, resp)
     }
 }
+//上传视频资源
+func uploadMedia(c echo.Context) error{
+    cookie,err :=c.Cookie("token")
+    if err != nil {return c.JSON(http.StatusOK, "wrong")}else{
+        claims := parseJwt(cookie.Value)
+        user_id  := claims["user_id"]
+        if user_id =="expired" { 
+            return delCookie(c)
+        }
+    file, err := c.FormFile("vid")
+        if err != nil {
+            return err
+        }
+        src, err := file.Open()
+        if err != nil {
+            return err
+        }
+        defer src.Close()
+    
+        // Destination
+        dst, err := os.Create("./media/"+file.Filename)
+        if err != nil {
+            return err
+        }
+        defer dst.Close()
+        // Copy
+        if _, err = io.Copy(dst, src); err != nil {
+            return err
+        }else{
+            return c.JSON(http.StatusOK, "上传成功！")
+        }
+    }
+}
+//获取信息接口
+func showEverthing(c echo.Context) error{
+    way := c.Param("where")
+    id  := c.Param("id")
+    resp := map[string]string{"message": "获取信息失败！"}
+    //获取用户信息
+    if way == "people" {
+        db,err:=opendb(c)      //连接数据库
+        if err!=nil {
+        return err
+        }
+        
+    
+    result:=db.QueryRow("select name,userimage from userinfo where id=?",id)      //单行查询用户基本信息
+    var name,userimage string
+    result.Scan(&name,&userimage)
+    // fmt.Println(result)
+    if name !="" {
+        result,err := db.Query("select id,title,images,message from cards where user_id=?",id)
+        if err!=nil {
+            return err
+            }
+            defer db.Close()    //关闭数据库
+        // fmt.Println(result)
+    // columns, _ := result.Columns()
+	// columnLength := len(columns)
+    // cards :="{"
+    i :=0
+    for result.Next(){        //循环显示所有的数据
+        i++
+        var id,title,images,message string
+        result.Scan(&id,&title,&images,&message)
+        // card:=Card{Id:id}
+        // card :="[id:"+id+",title:"+title+"],"
+        // cards=strings.Join([]string{cards,card},"")
+        // fmt.Println(id,title,images,message)
+    }
+    // cards=strings.Join([]string{cards,"}"},"")
+    // fmt.Println(cards)
+    // cards,_:=json.Marshal(cards)
+    // fmt.Println(card)
+    card:=map[string]interface{}{"id":id,"title":name}
+    cards:=map[int]interface{}{1:card,2:card}
+    resp := map[string]interface{}{"name":name,"userimage":userimage,"cards":cards}
+    return c.JSON(http.StatusOK,resp)
+    }
+    }
+    if way =="card" {
+
+    }
+    return c.JSON(http.StatusOK,resp)
+}
 //连接数据库
 func opendb(c echo.Context) (*sql.DB ,error) {
     db,_:=sql.Open("mysql","root:xfz123456@(127.0.0.1:3306)/goblin") // 设置连接数据库的参数
@@ -228,6 +317,7 @@ func opendb(c echo.Context) (*sql.DB ,error) {
         return db,err
 
 }
+
 func main() {
     e := echo.New()
     //跨域中间件
@@ -238,8 +328,13 @@ func main() {
       }))
     e.POST("/zhuce", zhuce)            //注册路由
     e.POST("/denglu", denglu)           //登陆路由
-    e.POST("uploadImage",uploadImage)   //上传图片路由
-    e.POST("release",release)           //发布card路由
+    e.POST("/uploadImage",uploadImage)   //上传图片路由
+    e.POST("/uploadMedia",uploadMedia)   //上传视频路由
+    e.POST("/release",release)           //发布card路由
+    e.GET("/show/:where/:id",showEverthing)
+    e.Static("/avator","./avator")    //用户头像资源
+    e.Static("/images","./images")    //用户图片资源
+    e.Static("/media","./media")    //用户视频资源
 	e.Logger.Fatal(e.Start(":8000"))
     
 }

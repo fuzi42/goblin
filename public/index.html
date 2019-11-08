@@ -7,10 +7,13 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" type="text/css" href="./css/antd.css" />
   <link rel="stylesheet" type="text/css" href="./font-awesome-4.7.0/css/font-awesome.css" />
-  <title>Document</title>
+  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <title>哥?布:零</title>
 </head>
 
-<body>
+<body style="padding: 0;">
   <div id='bg' style="width:100%;height:100%;background:url('images/background.gif') 50% 0 repeat-y fixed;">
  <!-- 主页title   -->
     <div id='title' style="width:100%;height:60px;position:fixed;background:white" }}>
@@ -21,12 +24,13 @@
           <li>
             <Login />
           </li>
-          <li onClick={this.map.bind(this,1)}>作品展示</li>
-          <li onClick={this.map.bind(this,2)}>品牌打造</li>
-          <li onClick={this.map.bind(this,3)}>需求资源</li>
-          <li onClick={this.map.bind(this,4)}>在线教程</li>
-          <li onClick={this.map.bind(this,5)}>个人中心</li>
-          <li onClick={this.map.bind(this,6)}>关于我们</li>
+          <li><a>作品展示</a></li>
+          <li><a>品牌打造</a></li>
+          <li><a>需求资源</a></li>
+          <li><a>在线教程</a></li>
+          <li><a href="/userinfo.html">个人中心</a></li>
+          <li><a>关于我们</a></li>
+          <li id="user" data-toggle="modal" data-target="#denglu">登录</li>
         </ul>
       </div>
     </div>
@@ -41,6 +45,62 @@
       </div>
       
     </div>
+<!-- 登录modal -->
+    <div class="modal fade" id="denglu" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+              &times;
+            </button>
+            <img src="/images/goblin.png" alt="" style="width: 65px;float: left;"/>
+            <h4 class="modal-title" id="myModalLabel">
+              登录
+            </h4>
+          </div>
+          <div class="modal-body">
+            <input id="user_name" type="text" name="name" placeholder="用户名" style="width: 200px;border: none;border-bottom: 1px solid;display: block;margin:20px auto;padding:inherit"/>
+            <input id="user_password" type="password" name="password" placeholder="密码" style="width: 200px;border: none;border-bottom: 1px solid;display: block;margin:auto;padding:inherit"/>
+            <div style="font-size: 12px;margin-top: 20px;"><input name ="remember" type ="checkbox" value ="" />记住账号密码</div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" style="background-color: lightcoral;" data-toggle="modal" data-target="#zhuce" onclick="hid()">
+              注册
+            </button>
+            <button type="button" class="btn btn-primary" onclick="denglu()">
+              登录
+            </button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal -->
+    </div>
+<!-- 注册modal -->
+    <div class="modal fade" id="zhuce" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+              &times;
+            </button>
+            <img src="/images/goblin.png" alt="" style="width: 65px;float: left;"/>
+            <h4 class="modal-title" id="myModalLabel" >
+              注册
+            </h4>
+          </div>
+          <div class="modal-body">
+            <input id="new_name" type="text" name="name" placeholder="用户名" style="width: 200px;border: none;border-bottom: 1px solid;display: block;margin:20px auto;padding:inherit"/>
+            <input id="new_password" type="password" name="password" placeholder="密码" style="width: 200px;border: none;border-bottom: 1px solid;display: block;margin:auto;padding:inherit"/>
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" style="background-color: lightcoral;" onclick="zhuce()" >
+              注册
+            </button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal -->
+    </div>
+
 <!-- 主页内容 -->
     <div style="width:1000px;height:800px;margin:50px auto">
 
@@ -67,7 +127,90 @@
 
 </body>
 <script>
-
+  $(document).ready(function(){
+    $.ajax({
+        type: "POST",
+        url: "http://127.0.0.1:8000/denglu",
+        xhrFields:{                       //带上Cookie
+                withCredentials : true
+        }, 
+        headers:{
+          "content-type":"application/json",
+          
+          },
+        dataType: "text", //后端返回数据格式
+        crossDomain:true,
+        success: function (data) {
+            data=JSON.parse(data)   //转成json格式
+            if(data["message"]==="登录成功！"){
+            $("#user").replaceWith($('<li><div class="dropdown"><span id="user"></span><div class="dropdown-content"><p class="delCookie" onclick="delCookie()">退出</p></div></div></li>'));
+            $("#user").text(data["name"])
+            }
+         }
+    });
+  })
+function delCookie(){
+  var exp = new Date(); 
+    exp.setTime(exp.getTime() - 1); 
+    var cval=""; 
+    document.cookie= "token="+cval+";expires="+exp.toGMTString(); 
+    window.location.reload()
+}
+function hid(){
+  $("#denglu").modal('hide');
+  document.body.style.padding=0;
+}
+function zhuce(){
+  $.ajax({
+        type: "POST",
+        url: "http://127.0.0.1:8000/zhuce",
+        headers:{"content-type":"application/json"},
+        data: JSON.stringify({
+          name:$("#new_name").val() ,
+          password :$("#new_password").val()
+        }),
+        dataType: "text", //后端返回数据格式
+        success: function (data){
+            data=JSON.parse(data)   //转成json格式
+            if(data["message"]==="注册成功！"){
+             alert(data["message"])
+             window.location.reload()
+            }else{
+              alert(data["message"])
+            }
+         }
+    });
+}
+function denglu(){
+  $.ajax({
+        type: "POST",
+        url: "http://127.0.0.1:8000/denglu",
+        xhrFields:{                          //带上Cookie
+                withCredentials : true
+        }, 
+        headers:{
+          "content-type":"application/json",
+          
+          },
+        data: JSON.stringify({
+          name:$("#user_name").val() ,
+          password :$("#user_password").val()
+        }),
+        dataType: "text", //后端返回数据格式
+        success: function (data) {
+            data=JSON.parse(data)   //转成json格式
+            if(data["message"]==="登录成功！"){         
+              var exp = new Date(); 
+              exp.setTime(exp.getTime() + 1*24*60*60*1000); 
+              document.cookie = "token="+ escape (data["token"]) + ";expires=" + exp.toGMTString(); 
+             alert(data["message"])
+             window.location.reload()
+            }else{
+              alert(data["message"])
+            }
+         }
+    });
+}
 </script>
 
 </html>

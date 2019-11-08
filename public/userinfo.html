@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" style="width: 100%;height: 100%;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="./css/style.css" />
+    <link rel="stylesheet" type="text/css" href="./font-awesome-4.7.0/css/font-awesome.css" />
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="./js/doT.js"></script>
+    <title>哥?布:零-个人中心</title>
+</head>
+<body style="width: 100%;height: 100%; padding: 0;margin: 0;">
+    <div style="position: absolute;left: 0;top: 0;color: white;"><a href="/index.html" style="color: white;">返回</a></div>
+    <div style="width: 100%;height: auto;background: url('/images/background.gif') 50% 0 repeat-y fixed;">
+        <div class="title" style="width: 800px;height: 200px;position: relative;top: 50px;box-shadow: 0px 0px 10px 5px #666666;border: 1px solid gray;color: white;margin:auto;padding: 10px;border-radius: 8px;">
+            <div>
+                <img id="user_image" src="" style="width: 100px;height:100px;border-radius:50%;margin-left: 50px;margin-top: 20px;;float: left;">
+                <h2 id="user_name" style="line-height: 4;left: 30px;position: relative;float: left;"></h2>
+                <button style="float: right;margin-right:30px;margin-top: 30px;">关注</button>
+            </div>
+            <div style="position: relative;top:100px;">
+                <p>askdlfjsalkdfjslkdfjsdsdfsdkfjsdl</p>
+                <div style="float: right;position: relative;">
+                <button>关注</button>
+                <button onclick="getshow()">作品</button>
+                <button>收藏</button>
+                <button>订单</button>
+                <button>需求</button>
+                </div>
+            </div>
+
+        </div>
+        <!-- 内容模块 -->
+        <div class="content" style="width: 1000px;min-height: 800px;background: white;margin:auto;margin-top: 100px;">
+            <div style="width:400px;margin: auto;">
+                <img src="/images/goblin.png" style="width: 200px;height: auto;float: left;margin: 20px;" alt=""/>
+                <h2 style="line-height: 5;font-family: ziti;">我的作品</h2>
+            </div>
+            <div  id="testid" style="width:100%;">
+                
+            </div>
+
+
+        </div>
+
+    </div>
+</body>
+<!-- 用户信息获取 -->
+<script>
+$(document).ready(function(){
+    $.ajax({
+        type: "POST",
+        url: "http://127.0.0.1:8000/denglu",
+        xhrFields:{                       //带上Cookie
+                withCredentials : true
+        }, 
+        headers:{
+          "content-type":"application/json",
+          
+          },
+        dataType: "text", //后端返回数据格式
+        crossDomain:true,
+        success: function (data) {
+            data=JSON.parse(data)   //转成json格式
+            if(data["message"]==="登录成功！"){
+            // $("#user").replaceWith($('<li id="user"></li>'));
+            $("#user_name").text(data["name"])
+            $("#user_image").attr('src',"http://127.0.0.1:8000"+data["userimage"]);
+            }
+         }
+    });
+  })
+</script>
+<!-- 加载用户作品 -->
+<script type="text/x-dot-template" id="useType0">
+    {{~it:value:index}}
+    <div style="width: 80%;height: 600px;margin:50px auto;">
+            <div style="width: 60%;height: 100%;margin:auto;">
+                <video src="http://127.0.0.1:8000/media/13850477-1-16.mp4" style="width: 100%;"></video>
+                <div style="width: 100%; margin:30px auto;text-align: center;">
+                    <a style="padding:8px 10px;background: coral;color: white;">SHARE</a>
+                    <h3 style="font-weight: 500;">{{=value.name}}</h3>
+                    <p style="color: #666666;">{{=value.age}}</p>
+                    <p style="color: #666666;line-height: 26px;">
+                            {{=value.fun}}
+                    </p>
+                </div>
+                <div style="width:100%;height:auto;">
+                        <ul class="meta-list">
+                            <li><a href="#"><i class="fa fa-comments-o" ></i>&nbsp; 37</a> &nbsp; <i class="flaticon-circle"></i> &nbsp; <a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i>&nbsp; 20</a></li>
+                            <li><a href="#"><i class="flaticon-substract"></i> &nbsp;— 继续阅读 — &nbsp; <i class="flaticon-substract"></i></a></li>
+                            <li><a href="#"><i class="fa fa-share-alt" aria-hidden="true"></i> &nbsp;分享</a></li>
+                        </ul>
+                    </div>
+            </div>
+            </div>
+    {{~}}
+</script>
+
+<script>
+    function getshow(){
+        $.ajax({
+        type: "POST",
+        url: "http://127.0.0.1:8000/show/",
+        xhrFields:{                       //带上Cookie
+                withCredentials : true
+        }, 
+        headers:{
+          "content-type":"application/json",
+          
+          },
+        dataType: "text", //后端返回数据格式
+        crossDomain:true,
+        success: function (data) {
+            data=JSON.parse(data)   //转成json格式
+            if(data["message"]==="登录成功！"){
+            // $("#user").replaceWith($('<li id="user"></li>'));
+            $("#user_name").text(data["name"])
+            $("#user_image").attr('src',"http://127.0.0.1:8000"+data["userimage"]);
+            }
+         }
+    });
+    }
+    /*基本用法*/
+    var testjson=[
+        {"name":"张三","age":31,"fun":"吃东西"},
+        {"name":"李四","age":24,"fun":"上网"},
+        {"name":"王五","age":70,"fun":"散步，跑步"}
+    ],//定义要渲染数据，一般是从后台ajax拉取
+        tmpltxt=doT.template(document.getElementById("useType0").innerHTML);//生成模板方法
+    document.getElementById("testid").innerHTML=tmpltxt(testjson);//数据渲染
+</script>
+</html>
