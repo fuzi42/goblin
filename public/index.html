@@ -26,9 +26,9 @@
           </li>
           <li><a>作品展示</a></li>
           <li><a>品牌打造</a></li>
-          <li><a>需求资源</a></li>
+          <li><a href="/need.html">需求资源</a></li>
           <li><a>在线教程</a></li>
-          <li><a href="/userinfo.html">个人中心</a></li>
+          <li><a onclick="toinfo()">个人中心</a></li>
           <li><a>关于我们</a></li>
           <li id="user" data-toggle="modal" data-target="#denglu">登录</li>
         </ul>
@@ -39,8 +39,8 @@
       <!-- {/* <img src="images/background.gif" alt='' style="width:100%;"/> */} -->
       <div
         style="margin-right: auto;margin-left: auto;padding-right: 15;padding-left: 15;width: 100%;text-align:center">
-        <h1 className='font-design' style="margin-top:300px;font-family:ziti;color:white;font-size:60px">哥?布:零</h1>
-        <h1 className='font-design' style="font-family:ziti;color:white;font-size:25px">keep the good with light and
+        <h1 class='font-design' style="margin-top:300px;font-family:ziti;color:white;font-size:60px">哥?布:零</h1>
+        <h1 class='font-design' style="font-family:ziti;color:white;font-size:25px">keep the good with light and
           shadow.</h1>
       </div>
       
@@ -103,7 +103,7 @@
 
 <!-- 主页内容 -->
     <div style="width:1000px;height:800px;margin:50px auto">
-
+        <div><div>拍摄风格</div><div>拍摄套餐</div><div>作品展示</div></div>
 
       <br />
     </div>
@@ -127,6 +127,18 @@
 
 </body>
 <script>
+   var scrolltop = new Array();
+    var i = 0;
+    scrolltop[0] = 0;
+    $(document).scroll(function(){
+        i++;
+        scrolltop[i] = $(document).scrollTop();
+        if (scrolltop[i] > scrolltop[i-1]) {
+            $("#title").fadeOut()
+        }else{
+            $("#title").fadeIn()
+        };
+    })
   $(document).ready(function(){
     $.ajax({
         type: "POST",
@@ -149,6 +161,15 @@
          }
     });
   })
+function toinfo(){
+  var arr,reg=new RegExp("(^| )token=([^;]*)(;|$)");
+ 
+    if(arr=document.cookie.match(reg)){
+      window.location.href="/userinfo.html"
+    }else{
+      alert("请先登陆！")
+    }
+}
 function delCookie(){
   var exp = new Date(); 
     exp.setTime(exp.getTime() - 1); 
