@@ -160,10 +160,12 @@ a {
   -webkit-text-decoration-skip: objects;
 }
 a:hover {
-  color: #40a9ff;
+  color: black;
 }
 a:active {
-  color: #096dd9;
+  /* color: #096dd9; */
+  text-decoration: none;
+  outline: 0;
 }
 a:active,
 a:hover {
@@ -24530,4 +24532,12 @@ p{
 .dropdown:hover .dropdown-content {
     display: block;
 }
+a{
+  text-decoration: none;
+  color:white;
+}
+.map a{
+  color:#333333;
+}
+
 /*# sourceMappingURL=antd.css.map*/

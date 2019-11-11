@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" style="width:100%;height:100%">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="./css/style.css" />
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="./js/doT.js"></script>
+    <title>哥?布:零-作品展示</title>
+</head>
+<body style="width: 100%;height: 100%;margin: 0;padding: 0;">
+        <div style="position: absolute;left: 0;top: 0;color: white;"><a href="/index.html" style="color: black;">返回</a></div>
+    <div style="width: 100%;height: 100%;">
+        <!-- 标题模块 -->
+        <div class="title" style="width: 100%;height: auto;margin-top: 100px;">
+                <div style="width: 300px;margin: auto;"><img src="/images/goblin.png" style="float: left;"><h1 style="line-height: 80px;font-family: ziti;">作品展示</h1></div>
+        </div>
+        <!-- 展示模块 -->
+        <div class="content" id="testid" style="width: 1000px;height: auto;margin: auto;">
+               
+        </div>
+    </div>
+</body>
+<script type="text/x-dot-template" id="useType0">
+    {{~it:value:index}}
+    <div style="width: 80%;height: 600px;margin:120px auto;">
+            <div style="width: 80%;height: 100%;margin:auto;">
+                <video src="http://127.0.0.1:8000/media/13850477-1-16.mp4" controls="controls" style="width: 100%;"></video>
+                <div style="width: 100%; margin:30px auto;text-align: center;">
+                    <a style="padding:8px 10px;background: coral;color: white;">SHARE</a>
+                    <h3 style="font-weight: 500;">{{=value.name}}</h3>
+                    <p style="color: #666666;">{{=value.age}}</p>
+                    <p style="color: #666666;line-height: 26px;">
+                            {{=value.fun}}
+                    </p>
+                </div>
+                <div style="width:100%;height:auto;">
+                        <ul class="meta-list">
+                            <li><a href="#"><i class="fa fa-comments-o" ></i>&nbsp; 37</a> &nbsp; <i class="flaticon-circle"></i> &nbsp; <a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i>&nbsp; 20</a></li>
+                            <li><a href="#"><i class="flaticon-substract"></i> &nbsp;— 继续阅读 — &nbsp; <i class="flaticon-substract"></i></a></li>
+                            <li><a href="#"><i class="fa fa-share-alt" aria-hidden="true"></i> &nbsp;分享</a></li>
+                        </ul>
+                    </div>
+            </div>
+            </div>
+    {{~}}
+</script>
+<script>
+ var testjson=[
+        {"name":"张三","age":31,"fun":"吃东西"},
+        {"name":"李四","age":24,"fun":"上网"},
+        {"name":"王五","age":70,"fun":"散步，跑步"}
+    ],//定义要渲染数据，一般是从后台ajax拉取
+        tmpltxt=doT.template(document.getElementById("useType0").innerHTML);//生成模板方法
+    document.getElementById("testid").innerHTML=tmpltxt(testjson);//数据渲染
+</script>
+</html>
