@@ -4,35 +4,160 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="./css/style.css" />
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="./js/doT.js"></script>
     <title>哥?布:零-作品展示</title>
 </head>
 <body style="width: 100%;height: 100%;margin: 0;padding: 0;">
-        <div style="position: absolute;left: 0;top: 0;color: white;"><a href="/index.html" style="color: black;">返回</a></div>
+    <!-- 发布作品模块 -->
+    <div style="position: fixed;right: 0;top: 20%;"><button style="padding: 5px 20px;border-radius: 80% 50%;cursor: pointer;color: white;" data-toggle="modal" data-target="#send" onclick="image()">发布图片</button></div>
+    <div style="position: fixed;right: 0;top: 40%;"><button style="padding: 5px 20px;border-radius: 80% 50%;cursor: pointer;color: white;" data-toggle="modal" data-target="#send" onclick="video()">发布视频</button></div>
+    <div style="position: absolute;left: 0;top: 0;color: white;"><a href="/index.html" style="color: black;">返回</a></div>
     <div style="width: 100%;height: 100%;">
         <!-- 标题模块 -->
         <div class="title" style="width: 100%;height: auto;margin-top: 100px;">
-                <div style="width: 300px;margin: auto;"><img src="/images/goblin.png" style="float: left;"><h1 style="line-height: 80px;font-family: ziti;">作品展示</h1></div>
+                <div style="width: 340px;margin: auto;"><img src="/images/goblin.png" style="float: left;width: 150px;"><h1 style="line-height: 1.5;font-family: ziti;">作品展示</h1></div>
         </div>
         <!-- 展示模块 -->
         <div class="content" id="testid" style="width: 1000px;height: auto;margin: auto;">
                
         </div>
     </div>
+
+
+<!-- 发布模块 -->
+    <div class="modal fade" id="send" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                &times;
+              </button>
+              <img src="/images/goblin.png" alt="" style="width: 65px;float: left;"/>
+              <h4 class="modal-title" id="myModalLabel">
+                作品发布
+              </h4>
+            </div>
+            <div class="modal-body">
+                <div class="dropdown" >
+                <input id="title" type="text" name="title" placeholder="标题" style="width: 200px;border: none;border-bottom: 1px solid;outline: none;margin:20px auto;padding:inherit"/>    
+                <div class="productDrawingBox">
+                    <!-- 发布图片 -->
+                    <div class="productDescription image">上传图片</div>
+                    <div class="productImg image">
+                        <div id="uploadBox">
+                        </div>
+                        <div class="uploadDIv">
+                            <span>+</span><input type="file" name="file" multiple id="inputs" accept="image/*" class='fileTest' multiple="multiple" />
+                        </div>
+                    </div>
+                    <!-- 发布视频 -->
+                    <div class="productDescription video">上传视频</div>
+                    <div class="productImg video">
+                        <div id="uploadBox">
+                        </div>
+                        <div class="uploadDIv">
+                            <span>+</span><input type="file" name="file"  id="inputsVideo" accept="video/mp4" class='fileTest'  />
+                        </div>
+                    </div>
+                </div>
+                <textarea id="messages" rows="4" placeholder="在这里写下您的感想！" style="width: 100%;min-height: 60px;padding: 10px;resize: none;border-radius: 8px;outline: none;"></textarea>
+            
+            </div>
+            <div class="modal-footer">
+              
+              <button type="button" class="btn btn-primary" onclick="sendWork()">
+                发布
+              </button>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+      </div>
 </body>
+<script>
+    function image(){
+       $('.video').hide();
+       $('.image').show()
+    }
+    function video(){
+        $('.image').hide();
+        $('.video').show();
+    }
+    var textjson=[]
+    var card={}
+    $.ajax({
+        type: "GET",
+        url: "http://127.0.0.1:8000/show/card/all",
+        xhrFields:{                       //带上Cookie
+                withCredentials : true
+        }, 
+        headers:{
+          "content-type":"application/json",
+          
+          },
+        dataType: "text", //后端返回数据格式
+        crossDomain:true,
+        success: function (data) {
+            data=JSON.parse(data)   //转成json格式
+             for ( i in data["cards"]) {
+                card={"name":data["cards"][i].name,"user_id":data["cards"][i].user_id,"title":data["cards"][i].title,"message":data["cards"][i].message,"id":data["cards"][i].id,"images":data["cards"][i].images,"video":data["cards"][i].media}   
+                textjson[i]=card;
+            } 
+        console.log(textjson)
+            
+        tmpltxt=doT.template(document.getElementById("useType0").innerHTML);//生成模板方法
+    document.getElementById("testid").innerHTML=tmpltxt(textjson);//数据渲染
+         }
+    });
+</script>
 <script type="text/x-dot-template" id="useType0">
     {{~it:value:index}}
-    <div style="width: 80%;height: 600px;margin:120px auto;">
-            <div style="width: 80%;height: 100%;margin:auto;">
-                <video src="http://127.0.0.1:8000/media/13850477-1-16.mp4" controls="controls" style="width: 100%;"></video>
+    <div style="width: 80%;height: 700px;margin:50px auto;border:1px solid #8080804f">
+            <div style="width: 60%;height: 100%;margin:auto;">
+             {{? value.video}}  
+             <video src="http://127.0.0.1:8000/media/{{=value.video}}" style="width: 100%;margin-top:50px" controls="controls"></video> 
+             {{??}}   <div id="myCarousel{{=value.id}}" class="carousel slide" style="margin-top:50px">
+						<!--轮播指标-->
+						<ol class="carousel-indicators">
+							<li data-target="#myCarousel{{=value.id}}" data-slide-to="0" class="active"></li>
+							<li data-target="#myCarousel{{=value.id}}" data-slide-to="1" ></li>
+							<li data-target="#myCarousel{{=value.id}}" data-slide-to="2" ></li>
+							<li data-target="#myCarousel{{=value.id}}" data-slide-to="3" ></li>
+						</ol>
+						<!--轮播指标-->
+						<!--轮播项目-->
+                        
+                        <div class="carousel-inner" style="height: 300px;">
+                            <div class="item active" >
+                                    <img src="http://127.0.0.1:8000/images/{{=it[index].images[0]}}" alt="First slide" >   
+                            </div>
+                            {{ for(var i=1, catlen=it[index].images.length; i<catlen; i++) { }}
+                            <div class="item" >
+                                    <img src="http://127.0.0.1:8000/images/{{=it[index].images[i]}}" alt="First slide" >   
+                            </div>
+							{{ } }}
+                        </div>
+                        
+						<!--轮播控制器-->
+						<a class="carousel-control left" href="#myCarousel{{=value.id}}" data-slide="prev">
+							<span class="glyphicon glyphicon-chevron-left"></span>
+						</a>
+						<a class="carousel-control right" href="#myCarousel{{=value.id}}" data-slide="next">
+							<span class="glyphicon glyphicon-chevron-right"></span>
+						</a>
+						<!--轮播控制器-->
+					</div>
+                {{?}}
                 <div style="width: 100%; margin:30px auto;text-align: center;">
                     <a style="padding:8px 10px;background: coral;color: white;">SHARE</a>
-                    <h3 style="font-weight: 500;">{{=value.name}}</h3>
-                    <p style="color: #666666;">{{=value.age}}</p>
+                    <h3 style="font-weight: 500;"><a href="/userinfo.html?people={{=value.user_id}}">{{=value.name}}</a></h3>
+                    <h3 style="font-weight: 500;">{{=value.title}}</h3>
+                    <p style="color: #666666;">{{=value.message}}</p>
                     <p style="color: #666666;line-height: 26px;">
-                            {{=value.fun}}
+                            {{=value.id}}
                     </p>
                 </div>
                 <div style="width:100%;height:auto;">
@@ -44,15 +169,120 @@
                     </div>
             </div>
             </div>
+
     {{~}}
 </script>
+
 <script>
- var testjson=[
-        {"name":"张三","age":31,"fun":"吃东西"},
-        {"name":"李四","age":24,"fun":"上网"},
-        {"name":"王五","age":70,"fun":"散步，跑步"}
-    ],//定义要渲染数据，一般是从后台ajax拉取
-        tmpltxt=doT.template(document.getElementById("useType0").innerHTML);//生成模板方法
-    document.getElementById("testid").innerHTML=tmpltxt(testjson);//数据渲染
+    var Images =[];
+    var Video ="";
+    $(function() {
+        var img = []; //创建一个空对象用来保存传入的图片
+        var vid = []; //创建一个空对象用来保存传入的视频
+        var AllowImgFileSize = '1013760'; //10兆
+        $("#inputs").change(function() {
+            var fil = this.files;
+            for(var i = 0; i < fil.length; i++) {
+
+                    reads(fil[i]);
+                    img.push(fil[i].name); //将传入的图片push到空对象中
+                console.log(fil[i])
+            }
+            if(img.length >= 6) { //判断图片的数量，数量不能超过3张
+                $('.uploadDIv').hide();
+            } else {
+                $('.uploadDIv').show();
+            }
+            Images=img;
+        });
+        $("#inputsVideo").change(function() {
+            var fil = this.files;
+            readsVideo(fil[0])
+            Video=fil[0].name;
+        });
+        function reads(fil) {
+            var reader = new FileReader();
+            reader.readAsDataURL(fil);
+            reader.onload = function() {
+                document.getElementById("uploadBox").innerHTML += "<div class='divImg' id='uploadImg'><img src='" + reader.result + "' class='imgBiMG'></div>";
+            }
+            var formData = new FormData();
+            formData.append('imgs', fil);
+            $.ajax({
+                url: 'http://127.0.0.1:8000/uploadImage?act=card',
+                type: 'post',
+                xhrFields:{                          //带上Cookie
+                withCredentials : true
+                },
+                processData:false,
+                contentType:false,
+                data: formData,
+                dataType: 'json',
+                success: function (res) {
+                    // 一旦设置的 dataType 选项，就不再关心 服务端 响应的 Content-Type 了
+                    // 客户端会主观认为服务端返回的就是 JSON 格式的字符串
+                    if(res['message']){
+
+
+                    }
+                }
+            })
+        }
+        function readsVideo(fil) {
+            var reader = new FileReader();
+            reader.readAsDataURL(fil);
+            reader.onload = function() {
+                document.getElementById("uploadBox").innerHTML += "<div class='divImg' id='uploadImg'><video src='" + reader.result + "' class='imgBiMG'></video></div>";
+            }
+            var formData = new FormData();
+            formData.append('vid', fil);
+            $.ajax({
+                url: 'http://127.0.0.1:8000/uploadMedia',
+                type: 'post',
+                xhrFields:{                          //带上Cookie
+                withCredentials : true
+                },
+                processData:false,
+                contentType:false,
+                data: formData,
+                dataType: 'json',
+                success: function (res) {
+                    // 一旦设置的 dataType 选项，就不再关心 服务端 响应的 Content-Type 了
+                    // 客户端会主观认为服务端返回的就是 JSON 格式的字符串
+                    if(res['message']){
+
+
+                    }
+                }
+            })
+        }
+    })
+
+    function sendWork(){
+        var title = $('#title').val();
+        var messages = $('#messages').val();
+        var images = Images;
+        var video = Video;
+        $.ajax({
+        url: 'http://127.0.0.1:8000/release',
+        headers:{'content-type':"application/json"},
+        type: 'post',
+        xhrFields:{                          //带上Cookie
+                withCredentials : true
+        },
+        data: JSON.stringify({ title:title,images:images,video:video,message:messages}),
+        dataType: 'json',
+        success: function (res) {
+           if(res==='未登录'){
+               alert("请先登录！")
+           }
+            if(res['message']){
+
+               alert('发布成功！');
+               window.location.reload();
+            }
+        }
+    })
+    }
 </script>
 </html>

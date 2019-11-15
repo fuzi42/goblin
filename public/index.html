@@ -265,10 +265,35 @@
     });
   })
 function toinfo(){
+  //判断是否有cookie登录
   var arr,reg=new RegExp("(^| )token=([^;]*)(;|$)");
  
     if(arr=document.cookie.match(reg)){
-      window.location.href="/userinfo.html"
+      $.ajax({
+        type: "POST",
+        url: "http://127.0.0.1:8000/denglu",
+        xhrFields:{                          //带上Cookie
+                withCredentials : true
+        }, 
+        headers:{
+          "content-type":"application/json",
+          
+          },
+        data: JSON.stringify({
+          name:$("#user_name").val() ,
+          password :$("#user_password").val()
+        }),
+        dataType: "text", //后端返回数据格式
+        success: function (data) {
+            data=JSON.parse(data)   //转成json格式
+            if(data["message"]==="登录成功！"){         
+              window.location.href="/userinfo.html?people="+data["user_id"];
+            }else{
+              alert(data["message"])
+            }
+         }
+    });
+     
     }else{
       alert("请先登陆！")
     }

@@ -12,7 +12,7 @@ import (
     "github.com/labstack/echo/middleware"
     _ "github.com/go-sql-driver/mysql"
     "time"
-    // "strings"
+    "strings"
     "github.com/dgrijalva/jwt-go"
     )
 var (
@@ -25,9 +25,10 @@ type User struct{
 }
 
 type Card struct{
-    Id          string  `json:"id"`
+    // Id          string  `json:"id"`
     Title       string  `json:"title"`
-    Images      string  `json:"images"`
+    Images      []string  `json:"images"`
+    Video       string  `json:"video"`
     Message     string  `json:"message"`
 }
 //注册功能
@@ -207,14 +208,22 @@ func release(c echo.Context) (err error) {
         if err = c.Bind(card); err != nil {
             return c.JSON(http.StatusOK, "数据错误")
         }
-        // fmt.Println(user.Name,user.Password)
+        fmt.Println(card.Title,card.Message,card.Images,card.Video)
         db,err:=opendb(c)      //连接数据库
         if err!=nil {
         return err
         }
         defer db.Close()    //关闭数据库
         id := time.Now().Unix()
-        db.Exec("insert into cards(id,user_id,title,message,images) values (?,?,?,?,?)",id,user_id,card.Title,card.Message,card.Images)     
+        image :=""
+        if card.Images != nil {
+            i := 0
+           for ;i < len(card.Images)-1 ; {
+                image = image + card.Images[i]+"|"
+                i++
+           }
+        }
+        db.Exec("insert into cards(id,user_id,title,message,images,media) values (?,?,?,?,?,?)",id,user_id,card.Title,card.Message,image,card.Video)     
         fmt.Println("发布成功！")
         resp := map[string]string{"message": "发布成功！"}
         return c.JSON(http.StatusOK, resp)
@@ -263,45 +272,66 @@ func showEverthing(c echo.Context) error{
         db,err:=opendb(c)      //连接数据库
         if err!=nil {
         return err
-        }
-        
-    
+        }    
     result:=db.QueryRow("select name,userimage from userinfo where id=?",id)      //单行查询用户基本信息
     var name,userimage string
     result.Scan(&name,&userimage)
     // fmt.Println(result)
     if name !="" {
-        result,err := db.Query("select id,title,images,message from cards where user_id=?",id)
+        result,err := db.Query("select id,title,images,message,media from cards where user_id=?",id)
         if err!=nil {
             return err
             }
             defer db.Close()    //关闭数据库
-        // fmt.Println(result)
-    // columns, _ := result.Columns()
-	// columnLength := len(columns)
-    // cards :="{"
     i :=0
+    cards:=map[int]interface{}{}
     for result.Next(){        //循环显示所有的数据
-        i++
-        var id,title,images,message string
-        result.Scan(&id,&title,&images,&message)
-        // card:=Card{Id:id}
-        // card :="[id:"+id+",title:"+title+"],"
-        // cards=strings.Join([]string{cards,card},"")
-        // fmt.Println(id,title,images,message)
+        
+        var id,title,images,message,media string
+        result.Scan(&id,&title,&images,&message,&media)
+        image_list := strings.Split(images,"|")
+        card:=map[string]interface{}{"id":id,"title":title,"message":message,"images":image_list,"media":media}
+        cards[i] = card
+        i++ 
+      
     }
-    // cards=strings.Join([]string{cards,"}"},"")
-    // fmt.Println(cards)
-    // cards,_:=json.Marshal(cards)
-    // fmt.Println(card)
-    card:=map[string]interface{}{"id":id,"title":name}
-    cards:=map[int]interface{}{1:card,2:card}
     resp := map[string]interface{}{"name":name,"userimage":userimage,"cards":cards}
     return c.JSON(http.StatusOK,resp)
     }
     }
     if way =="card" {
-
+        if id == "all" {
+            db,err:=opendb(c)      //连接数据库
+            if err!=nil {
+            return err
+            }
+            result,err := db.Query("select id,title,images,message,media,user_id from cards ")
+            if err!=nil {
+                return err
+                }
+                defer db.Close()    //关闭数据库
+            // fmt.Println(result)
+        // columns, _ := result.Columns()
+        // columnLength := len(columns)
+        cards:=map[int]interface{}{}
+        i :=0
+        for result.Next(){        //循环显示所有的数据
+         
+            var id,title,images,message,media,user_id string
+            result.Scan(&id,&title,&images,&message,&media,&user_id)
+            image_list := strings.Split(images,"|")
+            res:=db.QueryRow("select name from userinfo where id=?",user_id) 
+            var name string
+            res.Scan(&name)
+            card:=map[string]interface{}{"id":id,"title":title,"message":message,"media":media,"images":image_list,"user_id":user_id,"name":name}
+            cards[i] = card
+            i++
+        }
+    // card:=map[string]interface{}{"id":id,"title":title,"message":message}
+    // cards:=map[int]interface{}{1:card,2:card}
+    resp := map[string]interface{}{"cards":cards}
+    return c.JSON(http.StatusOK,resp)
+        }
     }
     return c.JSON(http.StatusOK,resp)
 }
@@ -331,7 +361,7 @@ func main() {
     e.POST("/uploadImage",uploadImage)   //上传图片路由
     e.POST("/uploadMedia",uploadMedia)   //上传视频路由
     e.POST("/release",release)           //发布card路由
-    e.GET("/show/:where/:id",showEverthing)
+    e.GET("/show/:where/:id",showEverthing)  //获取信息接口
     e.Static("/avator","./avator")    //用户头像资源
     e.Static("/images","./images")    //用户图片资源
     e.Static("/media","./media")    //用户视频资源
