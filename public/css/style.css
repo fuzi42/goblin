@@ -13,18 +13,18 @@ button{
 				src: url("ziti.ttf");
 }
 .map{
-  width:1000px;
+  width:1200px;
   position:relative;
   list-style:none;
   padding:0;
   margin:0;
   display:inline-block;
-  line-height:60px;
+  line-height:80px;
   /* margin-left:300px; */
 }
 .map li{
   position:relative;
-  margin:0 15px 0 40px;
+  margin:0 15px 0 10px;
   cursor:pointer;
   display:inline-block;
   font-family:"ziti";

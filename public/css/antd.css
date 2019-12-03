@@ -24440,18 +24440,18 @@ div.ant-typography-edit-content {
 				src: url("ziti.ttf");
 }
 .map{
-  width:1000px;
+  width:1200px;
   position:relative;
   list-style:none;
   padding:0;
   margin:0;
   display:inline-block;
-  line-height:60px;
+  line-height:80px;
   /* margin-left:300px; */
 }
 .map li{
   position:relative;
-  margin:0 15px 0 40px;
+  margin:0 15px 0 20px;
   cursor:pointer;
   display:inline-block;
   font-family:"ziti";
@@ -24460,7 +24460,7 @@ div.ant-typography-edit-content {
 
 }
 .map li:hover{
-  color: #f3a28b
+  /* color: #f3a28b */
 }
 p{
   letter-spacing: 1px
@@ -24538,6 +24538,15 @@ a{
 }
 .map a{
   color:#333333;
-}
 
+}
+.act{
+  font-size:30px;
+}
+.act :hover{
+  color: #f3a28b 
+}
+#user :hover{
+  color: #f3a28b 
+}
 /*# sourceMappingURL=antd.css.map*/

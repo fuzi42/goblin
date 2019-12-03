@@ -11,18 +11,54 @@
     <script src="./js/doT.js"></script>
     <title>哥?布:零-作品展示</title>
 </head>
-<body style="width: 100%;height: 100%;margin: 0;padding: 0;">
+<body style="width: 100%;height: auto;margin: 0;padding: 0;overflow-x: hidden;">
     <!-- 发布作品模块 -->
-    <div style="position: fixed;right: 0;top: 20%;"><button style="padding: 5px 20px;border-radius: 80% 50%;cursor: pointer;color: white;" data-toggle="modal" data-target="#send" onclick="image()">发布图片</button></div>
-    <div style="position: fixed;right: 0;top: 40%;"><button style="padding: 5px 20px;border-radius: 80% 50%;cursor: pointer;color: white;" data-toggle="modal" data-target="#send" onclick="video()">发布视频</button></div>
-    <div style="position: absolute;left: 0;top: 0;color: white;"><a href="/index.html" style="color: black;">返回</a></div>
-    <div style="width: 100%;height: 100%;">
-        <!-- 标题模块 -->
-        <div class="title" style="width: 100%;height: auto;margin-top: 100px;">
-                <div style="width: 340px;margin: auto;"><img src="/images/goblin.png" style="float: left;width: 150px;"><h1 style="line-height: 1.5;font-family: ziti;">作品展示</h1></div>
-        </div>
-        <!-- 展示模块 -->
-        <div class="content" id="testid" style="width: 1000px;height: auto;margin: auto;">
+    <div style="position: fixed;right: 0;bottom: 20%;"><button style="padding: 5px 20px;border-radius: 80% 50%;cursor: pointer;color: white;z-index: 100;" data-toggle="modal" data-target="#send" onclick="image()">发布图片</button></div>
+    <div style="position: fixed;right: 0;bottom: 10%;"><button style="padding: 5px 20px;border-radius: 80% 50%;cursor: pointer;color: white;z-index: 100;" data-toggle="modal" data-target="#send" onclick="video()">发布视频</button></div>
+    <!-- <div style="position: absolute;left: 0;top: 0;color: white;"><a href="/index.html" style="color: black;z-index: 100;">返回</a></div> -->
+    <!-- 标题模块 -->
+    <div class="title" style="height: auto;position: absolute;left: 100px;">
+        <div style="width: 340px;margin: auto;"><img src="/images/goblin.png" style="float: left;width: 150px;"><h1 style="line-height: 1.5;font-family: ziti;">作品展示</h1></div>
+    </div>  
+    <div style="margin-top: 300px;margin: auto;position: relative;top: 100px;left: 200px;">标语2------加油！奥利给！</div>
+    <div style="margin-top: 120px;width: 100%;">
+        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" style="height: 300px;margin: auto;"> 
+            <!-- 轮播图片及说明文字 -->
+            <div class="carousel-inner" role="listbox" style="width:100%;margin: auto;margin-left: 7px;">
+              <div class="item active">
+                <div style="width: 33%;float: left;margin: 0px;">
+                <img src="./images/003.jpg " style="width: 100%;height:auto;float: left;margin: 0px;" alt="图片1">
+                <div style="position: absolute;top: 27rem;width:30%;color: white;padding: 10px;background: #8080806b;">范：something is interesting！</div>
+                </div>
+                <div style="width: 33%;float: left;margin: 0px;">
+                <img src="./images/005.jpg" style="width: 100%;height:auto;float: left;margin: 0px;" alt="图片2">
+                <div style="position: absolute;top: 27rem;left: 33%;width: 30%;color: white;padding: 10px;background: #8080806b;">范：something is interesting！</div>
+                </div>
+                <div style="width: 33%;float: left;margin: 0px;">
+                <img src="./images/002.jpg" style="width: 100%;height:auto;float: left;margin: 0px;" alt="图片3">
+                <div style="position: absolute;top: 27rem;left:66%;width: 30%;color: white;padding: 10px;background: #8080806b;">范：something is interesting！</div>
+                </div>
+            </div>
+              <div class="item">
+                    <div style="width: 33%;float: left;margin: 0px;">
+                            <img src="./images/003.jpg " style="width: 100%;height:auto;float: left;margin: 0px;" alt="图片1">
+                            <div style="position: absolute;top: 27rem;width:30%;color: white;padding: 10px;background: #8080806b;">范：something is interesting！</div>
+                            </div>
+                            <div style="width: 33%;float: left;margin: 0px;">
+                            <img src="./images/005.jpg" style="width: 100%;height:auto;float: left;margin: 0px;" alt="图片2">
+                            <div style="position: absolute;top: 27rem;left: 33%;width: 30%;color: white;padding: 10px;background: #8080806b;">范：something is interesting！</div>
+                            </div>
+                            <div style="width: 33%;float: left;margin: 0px;">
+                            <img src="./images/002.jpg" style="width: 100%;height:auto;float: left;margin: 0px;" alt="图片3">
+                            <div style="position: absolute;top: 27rem;left:66%;width: 30%;color: white;padding: 10px;background: #8080806b;">范：something is interesting！</div>
+                            </div>
+                </div>
+            </div>
+    </div>
+
+    <!-- 展示模块 -->
+    <div style="width: 100%;height: 100%;margin-top: 220px;">
+        <div class="content" id="testid" style="width: 1800px;height: auto;margin: auto;">
                
         </div>
     </div>
@@ -77,6 +113,7 @@
         </div><!-- /.modal -->
       </div>
 </body>
+<!-- 获取作品数据 -->
 <script>
     function image(){
        $('.video').hide();
@@ -103,7 +140,7 @@
         success: function (data) {
             data=JSON.parse(data)   //转成json格式
              for ( i in data["cards"]) {
-                card={"name":data["cards"][i].name,"user_id":data["cards"][i].user_id,"title":data["cards"][i].title,"message":data["cards"][i].message,"id":data["cards"][i].id,"images":data["cards"][i].images,"video":data["cards"][i].media}   
+                card={"name":data["cards"][i].name,"userimage":data["cards"][i].userimage,"user_id":data["cards"][i].user_id,"title":data["cards"][i].title,"message":data["cards"][i].message,"id":data["cards"][i].id,"images":data["cards"][i].images,"video":data["cards"][i].media}   
                 textjson[i]=card;
             } 
         console.log(textjson)
@@ -113,10 +150,12 @@
          }
     });
 </script>
+<!-- dot引擎模板 -->
 <script type="text/x-dot-template" id="useType0">
     {{~it:value:index}}
-    <div style="width: 80%;height: 700px;margin:50px auto;border:1px solid #8080804f">
-            <div style="width: 60%;height: 100%;margin:auto;">
+    <div style="width: 80%;height: 1000px;margin:50px auto;border:1px solid #8080804f;padding:10px 30px">
+            <div style="width: 100%;height: 100%;margin:auto;">
+            <div style="float:left;width:70%">
              {{? value.video}}  
              <video src="http://127.0.0.1:8000/media/{{=value.video}}" style="width: 100%;margin-top:50px" controls="controls"></video> 
              {{??}}   <div id="myCarousel{{=value.id}}" class="carousel slide" style="margin-top:50px">
@@ -130,7 +169,7 @@
 						<!--轮播指标-->
 						<!--轮播项目-->
                         
-                        <div class="carousel-inner" style="height: 300px;">
+                        <div class="carousel-inner" style="height: 550px;">
                             <div class="item active" >
                                     <img src="http://127.0.0.1:8000/images/{{=it[index].images[0]}}" alt="First slide" >   
                             </div>
@@ -151,11 +190,12 @@
 						<!--轮播控制器-->
 					</div>
                 {{?}}
+              
                 <div style="width: 100%; margin:30px auto;text-align: center;">
                     <a style="padding:8px 10px;background: coral;color: white;">SHARE</a>
                     <h3 style="font-weight: 500;"><a href="/userinfo.html?people={{=value.user_id}}">{{=value.name}}</a></h3>
                     <h3 style="font-weight: 500;">{{=value.title}}</h3>
-                    <p style="color: #666666;">{{=value.message}}</p>
+                    <p style="color: #666666;height:80px;overflow:hidden;text-indent:40px;line-height:2">{{=value.message}}</p>
                     <p style="color: #666666;line-height: 26px;">
                             {{=value.id}}
                     </p>
@@ -163,16 +203,22 @@
                 <div style="width:100%;height:auto;">
                         <ul class="meta-list">
                             <li><a href="#"><i class="fa fa-comments-o" ></i>&nbsp; 37</a> &nbsp; <i class="flaticon-circle"></i> &nbsp; <a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i>&nbsp; 20</a></li>
-                            <li><a href="#"><i class="flaticon-substract"></i> &nbsp;— 继续阅读 — &nbsp; <i class="flaticon-substract"></i></a></li>
+                            <li><a href="/reshow.html"><i class="flaticon-substract"></i> &nbsp;— 继续阅读 — &nbsp; <i class="flaticon-substract"></i></a></li>
                             <li><a href="#"><i class="fa fa-share-alt" aria-hidden="true"></i> &nbsp;分享</a></li>
                         </ul>
-                    </div>
+                </div>
+            </div>
+            <div style="float:right;margin:auto;margin-top:50px">
+                    <a href="/userinfo.html?people={{=value.user_id}}" style="color:black;text-decoration: none;"><img src="http://127.0.0.1:8000{{=value.userimage}}" style="width:300px;height:300px;border-radius:50%;"></a>
+                    <h1 style="position:relative;left:120px"><a href="/userinfo.html?people={{=value.user_id}}" style="color:black;text-decoration: none;">{{=value.name}}</a></h1>
+                    <p style="width:270px;position:relative;left:30px;line-height:2;margin-top:50px;font-size:20px">我就是我，不一样的烟火！加油，奥利给！</p>
+            </div>
             </div>
             </div>
 
     {{~}}
 </script>
-
+<!-- 发布作品 -->
 <script>
     var Images =[];
     var Video ="";
@@ -257,7 +303,7 @@
             })
         }
     })
-
+    // 发布作品
     function sendWork(){
         var title = $('#title').val();
         var messages = $('#messages').val();

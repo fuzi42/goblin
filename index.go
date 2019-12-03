@@ -32,7 +32,7 @@ type Card struct{
     Message     string  `json:"message"`
 }
 //注册功能
-func zhuce(c echo.Context) (err error) {
+func register(c echo.Context) (err error) {
 
         // var userinfo User
         user:=new(User)
@@ -320,10 +320,10 @@ func showEverthing(c echo.Context) error{
             var id,title,images,message,media,user_id string
             result.Scan(&id,&title,&images,&message,&media,&user_id)
             image_list := strings.Split(images,"|")
-            res:=db.QueryRow("select name from userinfo where id=?",user_id) 
-            var name string
-            res.Scan(&name)
-            card:=map[string]interface{}{"id":id,"title":title,"message":message,"media":media,"images":image_list,"user_id":user_id,"name":name}
+            res:=db.QueryRow("select name,userimage from userinfo where id=?",user_id) 
+            var name,userimage string
+            res.Scan(&name,&userimage)
+            card:=map[string]interface{}{"id":id,"title":title,"message":message,"media":media,"images":image_list,"user_id":user_id,"name":name,"userimage":userimage}
             cards[i] = card
             i++
         }
@@ -356,7 +356,7 @@ func main() {
         AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
         AllowCredentials: true,
       }))
-    e.POST("/zhuce", zhuce)            //注册路由
+    e.POST("/register", register)            //注册路由
     e.POST("/denglu", denglu)           //登陆路由
     e.POST("/uploadImage",uploadImage)   //上传图片路由
     e.POST("/uploadMedia",uploadMedia)   //上传视频路由
