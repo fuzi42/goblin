@@ -21,9 +21,9 @@
             </div>
         </div>
         <div style="position: fixed;right: 0;"><button style="padding: 5px 20px;border-radius: 80% 50%;color: white;" data-toggle="modal" data-target="#send" >发布</button></div>
-        <div style="width: 1000px;height: auto;margin: 50px auto;margin-top: 100px;">
+        <div id="needs" style="width: 70%;height: auto;margin: 50px auto;margin-top: 100px;">
          <!-- 需求内容 -->
-            <div style="width: 1200px;height: auto;margin:100px auto;box-shadow: 0 1px 3px rgba(249, 249, 249, 0.08), 0 0 0 1px rgba(26, 53, 71, .04), 0 1px 1px rgba(26, 53, 71, .06);">
+            <div style="width: 100%;height: auto;margin:100px auto;box-shadow: 0 1px 3px rgba(249, 249, 249, 0.08), 0 0 0 1px rgba(26, 53, 71, .04), 0 1px 1px rgba(26, 53, 71, .06);">
                 <div style="background-image: linear-gradient(#b0d2d6, white);border-radius: 6px 6px 0 0;">
                    <div style="position: relative;height: auto;bottom: 50px;left: 50px;float: left;"> <img src="/images/kong.jpg" alt="" style="width: 130px;height:190px;border-radius: 4px;"/></div>
                     <div style="width: auto;margin-left:210px;padding: 10px;">
@@ -38,41 +38,7 @@
                     </div>
                     
             </div>
-            <div style="width: 1200px;height: auto;margin:100px auto;box-shadow: 0 1px 3px rgba(249, 249, 249, 0.08), 0 0 0 1px rgba(26, 53, 71, .04), 0 1px 1px rgba(26, 53, 71, .06);">
-                    <div style="background-image: linear-gradient(#b0d2d6, white);border-radius: 6px 6px 0 0;">
-                       <div style="position: relative;height: auto;bottom: 50px;left: 50px;float: left;"> <img src="/images/kong.jpg" alt="" style="width: 130px;height:190px;border-radius: 4px;"/></div>
-                        <div style="width: auto;margin-left:210px;padding: 10px;">
-                            <h2 style="font-weight: 500;color: white;text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);">用户名</h2>
-                            <h5 style="font-weight: 500;color: white;text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);">发布时间</h5>
-                            <h5 style="font-weight: 500;color: white;text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);">总浏览数</h5> 
-                            <button style="position: relative;right: 10px;bottom: 50px;float: right;padding: 3px 15px;color: white;">联系</button></div>
-                        </div>
-                        <div style="margin:auto ;margin-top: 50px;color: #666666;line-height: 26px;padding: 10px;">
-                            <p>因为，一张照片在本质上是永远不能完全超越其表现对象的，而绘画却能。一张照片也不能超越视觉本身，而超越视觉在一定程度上却是现代主义绘画的终极目标。相机在美化世界方面所扮演的角色，是如此成功，使得照片而非世界变成了美的事物的标准。</p>
-                            <button style="padding: 10px;border-radius: 16px;background: gray;margin-bottom: 20px;color: white;">了解更多</button>
-                        </div>
-                        
-                </div>
-                <div style="width: 1200px;height: auto;margin:100px auto;box-shadow: 0 1px 3px rgba(249, 249, 249, 0.08), 0 0 0 1px rgba(26, 53, 71, .04), 0 1px 1px rgba(26, 53, 71, .06);">
-                        <div style="background-image: linear-gradient(#b0d2d6, white);border-radius: 6px 6px 0 0;">
-                           <div style="position: relative;height: auto;bottom: 50px;left: 50px;float: left;"> <img src="/images/kong.jpg" alt="" style="width: 130px;height:190px;border-radius: 4px;"/></div>
-                            <div style="width: auto;margin-left:210px;padding: 10px;">
-                                <h2 style="font-weight: 500;color: white;text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);">用户名</h2>
-                                <h5 style="font-weight: 500;color: white;text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);">发布时间</h5>
-                                <h5 style="font-weight: 500;color: white;text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);">总浏览数</h5> 
-                                <button style="position: relative;right: 10px;bottom: 50px;float: right;padding: 3px 15px;color: white;">联系</button></div>
-                            </div>
-                            <div style="margin:auto ;margin-top: 50px;color: #666666;line-height: 26px;padding: 10px;">
-                                <p>因为，一张照片在本质上是永远不能完全超越其表现对象的，而绘画却能。一张照片也不能超越视觉本身，而超越视觉在一定程度上却是现代主义绘画的终极目标。相机在美化世界方面所扮演的角色，是如此成功，使得照片而非世界变成了美的事物的标准。</p>
-                                <button style="padding: 10px;border-radius: 16px;background: gray;margin-bottom: 20px;color: white;">了解更多</button>
-                            </div>
-                            
-                    </div>
-           
-            
-              
-               
-            
+
             </div>
         </div>
         <div class="modal fade" id="send" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -110,7 +76,7 @@
                                         <a class="item" style="display: block;" onclick="getkind(this)">旅行</a>
                                         </div>
                                     </div>
-                      <textarea rows="4" style="width: 100%;min-height: 60px;padding: 10px;resize: none;border-radius: 8px;outline: none;"></textarea>
+                      <textarea rows="4" id="messages" style="width: 100%;min-height: 60px;padding: 10px;resize: none;border-radius: 8px;outline: none;"></textarea>
                     </div>
                     <div class="modal-footer">
                       
@@ -123,11 +89,92 @@
               </div>
 </body>
 <script>
-function getplace(e){console.log($(e).text())
+  var place = ""
+  var kind = ""
+function getplace(e){
+    place = $(e).text()
     $('#place').text($(e).text())
 }
-function getkind(e){console.log($(e).text())
+function getkind(e){
+    kind = $(e).text()
     $('#kind').text($(e).text())
 }
+function send(){
+  // console.log($('#messages').val())
+  $.ajax({
+        type: "POST",
+        url: "http://127.0.0.1:8000/demand",
+        xhrFields:{                       //带上Cookie
+                withCredentials : true
+        }, 
+        headers:{
+          "content-type":"application/json",
+        },
+        data:JSON.stringify({place:place,kind:kind,message:$('#messages').val()}),
+        dataType: "text", //后端返回数据格式
+        crossDomain:true,
+        success: function (data) {
+            data=JSON.parse(data)   //转成json格式
+            if(data["message"]==="发布成功！"){
+              alert(data["message"])
+            }
+            if(data === "未登录"){
+              alert("请先登录！")
+            }
+         }
+    });
+}
+</script>
+<script type="text/x-dot-template" id="need-modal">
+  {{~it:value:index}}
+  <div style="width: 100%;height: auto;margin:100px auto;box-shadow: 0 1px 3px rgba(249, 249, 249, 0.08), 0 0 0 1px rgba(26, 53, 71, .04), 0 1px 1px rgba(26, 53, 71, .06);">
+      <div style="background-image: linear-gradient(#b0d2d6, white);border-radius: 6px 6px 0 0;">
+         <div style="position: relative;height: auto;bottom: 50px;left: 50px;float: left;"> <img src="http://127.0.0.1:8000{{=value.userimage}}" alt="" style="width: 150px;height:190px;border-radius: 4px;"/></div>
+          <div style="width: auto;margin-left:210px;padding: 10px;">
+              <h2 style="font-weight: 500;color: white;text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);">{{=value.name}}</h2>
+              <h5 style="font-weight: 500;color: white;text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);">{{=value.id}}</h5>
+              <h5 style="font-weight: 500;color: white;text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);">200</h5> 
+              <span style="color:gray">地点：<span style="color:gray">{{=value.place}}</span>
+              <span style="color:gray;margin-left:30px">风格：{{=value.kind}}</span>
+              <button style="position: relative;right: 10px;bottom: 50px;float: right;padding: 3px 15px;color: white;">联系</button></div>
+          </div>
+          <div style="margin:auto ;margin-top: 50px;color: #666666;line-height: 26px;padding-left: 30px;">
+              <p>{{=value.message}}</p>
+              <button style="padding: 10px;border-radius: 16px;background: gray;margin-bottom: 20px;color: white;">了解更多</button>
+             
+          </div>
+          
+  </div>
+  {{~}}
+</script>
+<script>
+ var textjson=[]
+    var card={}
+    $.ajax({
+        type: "GET",
+        url: "http://127.0.0.1:8000/show/need/all",
+        xhrFields:{                       //带上Cookie
+                withCredentials : true
+        }, 
+        headers:{
+          "content-type":"application/json",
+          
+          },
+        dataType: "text", //后端返回数据格式
+        crossDomain:true,
+        success: function (data) {
+            data=JSON.parse(data)   //转成json格式
+            k = 0
+             for ( i in data["needs"]) {
+                card={"name":data["needs"][i].name,"userimage":data["needs"][i].userimage,"user_id":data["needs"][i].user_id,"place":data["needs"][i].place,"message":data["needs"][i].message,"id":data["needs"][i].id,"kind":data["needs"][i].kind}   
+                textjson[i]=card;
+                k++
+            } 
+        console.log(textjson)
+            
+      tmpltxt=doT.template(document.getElementById("need-modal").innerHTML);//生成模板方法
+      document.getElementById("needs").innerHTML=tmpltxt(textjson);//数据渲染
+    }
+    });
 </script>
 </html>

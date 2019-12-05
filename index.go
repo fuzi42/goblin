@@ -31,6 +31,11 @@ type Card struct{
     Video       string  `json:"video"`
     Message     string  `json:"message"`
 }
+type Need struct{
+    Place       string  `json:"place"`
+    Kind        string  `json:"kind"`
+    Message     string  `json:"message"`
+}
 //注册功能
 func register(c echo.Context) (err error) {
 
@@ -215,15 +220,42 @@ func release(c echo.Context) (err error) {
         }
         defer db.Close()    //关闭数据库
         id := time.Now().Unix()
-        image :=""
+        image :=card.Images[0]
         if card.Images != nil {
-            i := 0
-           for ;i < len(card.Images)-1 ; {
-                image = image + card.Images[i]+"|"
+            i := 1
+           for ;i <= len(card.Images)-1 ; {
+                image = image + "|" + card.Images[i]
                 i++
            }
         }
         db.Exec("insert into cards(id,user_id,title,message,images,media) values (?,?,?,?,?,?)",id,user_id,card.Title,card.Message,image,card.Video)     
+        fmt.Println("发布成功！")
+        resp := map[string]string{"message": "发布成功！"}
+        return c.JSON(http.StatusOK, resp)
+    }
+}
+//发布需求功能
+func demand(c echo.Context) (err error) {
+    cookie,err :=c.Cookie("token")
+    if err != nil {return c.JSON(http.StatusOK, "未登录")}else{
+        claims := parseJwt(cookie.Value)
+        user_id  := claims["user_id"]
+        if user_id =="expired" { 
+           return delCookie(c)
+        }
+        // var userinfo User
+        need:=new(Need)
+        if err = c.Bind(need); err != nil {
+            return c.JSON(http.StatusOK, "数据错误")
+        }
+        // fmt.Println(card.Title,card.Message,card.Images,card.Video)
+        db,err:=opendb(c)      //连接数据库
+        if err!=nil {
+        return err
+        }
+        defer db.Close()    //关闭数据库
+        id := time.Now().Unix()
+        db.Exec("insert into demand(id,user_id,place,kind,message) values (?,?,?,?,?)",id,user_id,need.Place,need.Kind,need.Message)     
         fmt.Println("发布成功！")
         resp := map[string]string{"message": "发布成功！"}
         return c.JSON(http.StatusOK, resp)
@@ -273,6 +305,34 @@ func showEverthing(c echo.Context) error{
         if err!=nil {
         return err
         }    
+        if id == "all" {
+            db,err:=opendb(c)      //连接数据库
+            if err!=nil {
+            return err
+            }
+            result,err := db.Query("select id,name,userimage,message from userinfo ")
+            if err!=nil {
+                return err
+                }
+                defer db.Close()    //关闭数据库
+            // fmt.Println(result)
+        // columns, _ := result.Columns()
+        // columnLength := len(columns)
+        cards:=map[int]interface{}{}
+        i :=0
+        for result.Next(){        //循环显示所有的数据
+         
+            var id,name,userimage,message string
+            result.Scan(&id,&name,&userimage,&message)
+            card:=map[string]interface{}{"id":id,"name":name,"userimage":userimage,"message":message}
+            cards[i] = card
+            i++
+        }
+    // card:=map[string]interface{}{"id":id,"title":title,"message":message}
+    // cards:=map[int]interface{}{1:card,2:card}
+    resp := map[string]interface{}{"photoers":cards}
+    return c.JSON(http.StatusOK,resp)
+        }
     result:=db.QueryRow("select name,userimage from userinfo where id=?",id)      //单行查询用户基本信息
     var name,userimage string
     result.Scan(&name,&userimage)
@@ -296,6 +356,7 @@ func showEverthing(c echo.Context) error{
       
     }
     resp := map[string]interface{}{"name":name,"userimage":userimage,"cards":cards}
+
     return c.JSON(http.StatusOK,resp)
     }
     }
@@ -333,6 +394,39 @@ func showEverthing(c echo.Context) error{
     return c.JSON(http.StatusOK,resp)
         }
     }
+    if way =="need" {
+        if id == "all" {
+            db,err:=opendb(c)      //连接数据库
+            if err!=nil {
+            return err
+            }
+            result,err := db.Query("select id,place,kind,message,user_id from demand ")
+            if err!=nil {
+                return err
+                }
+                defer db.Close()    //关闭数据库
+            // fmt.Println(result)
+        // columns, _ := result.Columns()
+        // columnLength := len(columns)
+        needs:=map[int]interface{}{}
+        i :=0
+        for result.Next(){        //循环显示所有的数据
+         
+            var id,place,kind,message,user_id string
+            result.Scan(&id,&place,&kind,&message,&user_id)
+            res:=db.QueryRow("select name,userimage from userinfo where id=?",user_id) 
+            var name,userimage string
+            res.Scan(&name,&userimage)
+            need:=map[string]interface{}{"id":id,"place":place,"kind":kind,"message":message,"user_id":user_id,"name":name,"userimage":userimage}
+            needs[i] = need
+            i++
+        }
+    // card:=map[string]interface{}{"id":id,"title":title,"message":message}
+    // cards:=map[int]interface{}{1:card,2:card}
+    resp := map[string]interface{}{"needs":needs}
+    return c.JSON(http.StatusOK,resp)
+        }
+    }
     return c.JSON(http.StatusOK,resp)
 }
 //连接数据库
@@ -361,6 +455,7 @@ func main() {
     e.POST("/uploadImage",uploadImage)   //上传图片路由
     e.POST("/uploadMedia",uploadMedia)   //上传视频路由
     e.POST("/release",release)           //发布card路由
+    e.POST("/demand",demand)           //发布需求路由
     e.GET("/show/:where/:id",showEverthing)  //获取信息接口
     e.Static("/avator","./avator")    //用户头像资源
     e.Static("/images","./images")    //用户图片资源

@@ -57,8 +57,8 @@
     </div>
 
     <!-- 展示模块 -->
-    <div style="width: 100%;height: 100%;margin-top: 220px;">
-        <div class="content" id="testid" style="width: 1800px;height: auto;margin: auto;">
+    <div style="width: 100%;height: 100%;margin-top: 100px;">
+        <div class="content" id="testid" style="width: 90%;height: auto;margin: auto;">
                
         </div>
     </div>
@@ -111,7 +111,30 @@
             </div>
           </div><!-- /.modal-content -->
         </div><!-- /.modal -->
-      </div>
+    </div>
+    </div>
+<!-- 详细内容模块 -->
+    <div class="modal fade" id="xiang" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog" style="width: 900px;min-height: 500px;margin: auto;">
+      <div class="modal-content" >
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+            &times;
+          </button>
+          <img src="/images/goblin.png" alt="" style="width: 65px;float: left;"/>
+          <h4 class="modal-title" id="myModalLabel">
+        
+          </h4>
+        </div>
+        <div id="xiang-content">
+
+        </div>
+        <div class="modal-footer">
+          
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
 </body>
 <!-- 获取作品数据 -->
 <script>
@@ -139,9 +162,11 @@
         crossDomain:true,
         success: function (data) {
             data=JSON.parse(data)   //转成json格式
+            k = 0
              for ( i in data["cards"]) {
-                card={"name":data["cards"][i].name,"userimage":data["cards"][i].userimage,"user_id":data["cards"][i].user_id,"title":data["cards"][i].title,"message":data["cards"][i].message,"id":data["cards"][i].id,"images":data["cards"][i].images,"video":data["cards"][i].media}   
+                card={"name":data["cards"][i].name,"userimage":data["cards"][i].userimage,"user_id":data["cards"][i].user_id,"title":data["cards"][i].title,"message":data["cards"][i].message,"id":data["cards"][i].id,"images":data["cards"][i].images,"video":data["cards"][i].media,"cout":k}   
                 textjson[i]=card;
+                k++
             } 
         console.log(textjson)
             
@@ -157,7 +182,7 @@
             <div style="width: 100%;height: 100%;margin:auto;">
             <div style="float:left;width:70%">
              {{? value.video}}  
-             <video src="http://127.0.0.1:8000/media/{{=value.video}}" style="width: 100%;margin-top:50px" controls="controls"></video> 
+             <video src="http://127.0.0.1:8000/media/{{=value.video}}" style="width: 100%;height:500px;outline:black;background:black;margin-top:50px" controls="controls"></video> 
              {{??}}   <div id="myCarousel{{=value.id}}" class="carousel slide" style="margin-top:50px">
 						<!--轮播指标-->
 						<ol class="carousel-indicators">
@@ -169,7 +194,7 @@
 						<!--轮播指标-->
 						<!--轮播项目-->
                         
-                        <div class="carousel-inner" style="height: 550px;">
+                        <div class="carousel-inner" style="height: 500px;">
                             <div class="item active" >
                                     <img src="http://127.0.0.1:8000/images/{{=it[index].images[0]}}" alt="First slide" >   
                             </div>
@@ -203,20 +228,97 @@
                 <div style="width:100%;height:auto;">
                         <ul class="meta-list">
                             <li><a href="#"><i class="fa fa-comments-o" ></i>&nbsp; 37</a> &nbsp; <i class="flaticon-circle"></i> &nbsp; <a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i>&nbsp; 20</a></li>
-                            <li><a href="/reshow.html"><i class="flaticon-substract"></i> &nbsp;— 继续阅读 — &nbsp; <i class="flaticon-substract"></i></a></li>
+                            <li><a href="#"  data-toggle="modal" data-target="#xiang" value={{=value.cout}} onclick="read(this)"><i class="flaticon-substract"></i> &nbsp;— 继续阅读 — &nbsp; <i class="flaticon-substract"></i></a></li>
                             <li><a href="#"><i class="fa fa-share-alt" aria-hidden="true"></i> &nbsp;分享</a></li>
                         </ul>
                 </div>
             </div>
-            <div style="float:right;margin:auto;margin-top:50px">
-                    <a href="/userinfo.html?people={{=value.user_id}}" style="color:black;text-decoration: none;"><img src="http://127.0.0.1:8000{{=value.userimage}}" style="width:300px;height:300px;border-radius:50%;"></a>
-                    <h1 style="position:relative;left:120px"><a href="/userinfo.html?people={{=value.user_id}}" style="color:black;text-decoration: none;">{{=value.name}}</a></h1>
-                    <p style="width:270px;position:relative;left:30px;line-height:2;margin-top:50px;font-size:20px">我就是我，不一样的烟火！加油，奥利给！</p>
+            <div style="float:right;width:20%;height:100%;margin:auto;margin-top:50px">
+                    <a href="/userinfo.html?people={{=value.user_id}}" style="color:black;text-decoration: none;"><img src="http://127.0.0.1:8000{{=value.userimage}}" style="width:100%;height:21%;border-radius:50%;"></a>
+                    <h3 style="position:relative;right:-40%"><a href="/userinfo.html?people={{=value.user_id}}" style="color:black;text-decoration: none;">{{=value.name}}</a></h3>
+                    <p style="width:100%;position:relative;left:0px;line-height:2;margin-top:50px;font-size:16px;color:gray">我就是我，不一样的烟火！加油，奥利给！</p>
             </div>
             </div>
             </div>
 
     {{~}}
+</script>
+<!-- 详情内容模板 -->
+<script type="text/x-dot-template" id="xiang-modal">
+   
+    <div style="width:100%;height:100%;margin:auto;margin-top:50px">
+        <a href="/userinfo.html?people={{=it.user_id}}" style="color:black;text-decoration: none;float:left;margin-left:40px"><img src="http://127.0.0.1:8000{{=it.userimage}}" style="width:100px;height:100px;border-radius:50%;"></a>
+        <h3 style="margin-left:20px;float:left"><a href="/userinfo.html?people={{=it.user_id}}" style="color:black;text-decoration: none;">{{=it.name}}</a></h3>
+        <p style="width:100%;line-height:2;margin-top:10px;float:left;margin-left:40px;font-size:16px;color:gray">我就是我，不一样的烟火！加油，奥利给！</p>
+</div>
+    <hr style="display:inline-block;margin-top:130px"/>
+            <div style="width: 100%;height: 100%;margin:auto;">
+            <div style="width:90%;margin:auto">
+             {{? it.video}}  
+             <video src="http://127.0.0.1:8000/media/{{=it.video}}" style="width: 100%;height:500px;outline:black;background:black;margin-top:50px" controls="controls"></video> 
+             {{??}}   <div id="modal{{=it.id}}" class="carousel slide" style="width:60%;margin:auto">
+						<!--轮播指标-->
+						<ol class="carousel-indicators">
+							<li data-target="#myCarousel{{=it.id}}" data-slide-to="0" class="active"></li>
+							<li data-target="#myCarousel{{=it.id}}" data-slide-to="1" ></li>
+							<li data-target="#myCarousel{{=it.id}}" data-slide-to="2" ></li>
+							<li data-target="#myCarousel{{=it.id}}" data-slide-to="3" ></li>
+						</ol>
+						<!--轮播指标-->
+						<!--轮播项目-->
+                        
+                        <div class="carousel-inner" style="height:auto;">
+                            <div class="item active" >
+                                    <img src="http://127.0.0.1:8000/images/{{=it.images[0]}}" alt="First slide" >   
+                            </div>
+                            {{ for(var i=1, catlen=it.images.length; i<catlen; i++) { }}
+                            <div class="item" >
+                                    <img src="http://127.0.0.1:8000/images/{{=it.images[i]}}" alt="First slide" >   
+                            </div>
+							{{ } }}
+                        </div>
+                        
+						<!--轮播控制器-->
+						<a class="carousel-control left" href="#modal{{=it.id}}" data-slide="prev">
+							<span class="glyphicon glyphicon-chevron-left"></span>
+						</a>
+						<a class="carousel-control right" href="#modal{{=it.id}}" data-slide="next">
+							<span class="glyphicon glyphicon-chevron-right"></span>
+						</a>
+						<!--轮播控制器-->
+					</div>
+                {{?}}
+              
+                <div style="width: 100%; margin:30px auto;text-align: left;">
+                    <h3 style="font-weight: 500;">{{=it.title}}</h3>
+                    <p style="color: #666666;line-height:2">{{=it.message}}</p>
+                    <p style="color: #666666;line-height: 2px;">
+                            {{=it.id}}
+                    </p>
+                </div>
+                <div style="width:100%;height:auto;">
+                        <ul class="meta-list">
+                            <li><a href="#"><i class="fa fa-comments-o" ></i>&nbsp; 37</a> &nbsp; <i class="flaticon-circle"></i> &nbsp; <a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i>&nbsp;点赞 20</a></li>
+                            <!-- <li><a href="#"  data-toggle="modal" data-target="#xiang" value={{=it.cout}} onclick="read(this)"><i class="flaticon-substract"></i> &nbsp;— 继续阅读 — &nbsp; <i class="flaticon-substract"></i></a></li> -->
+                            <li><a href="#"><i class="fa fa-share-alt" aria-hidden="true"></i> &nbsp;分享</a></li>
+                        </ul>
+                </div>
+            </div>
+            <div style="margin:30px 0"><img src="http://127.0.0.1:8000{{=it.userimage}}" style="width:50px;height:50px;float:left;margin-left:40px;border-radius:50%;" />
+            <h4 style="float:left;margin:0 40px">{{=it.name}} :</h4> 这张照片拍的真好！
+            <p style="margin-left:130px;color:gray">时间：{{=it.id}}</p></div>
+            <hr />
+            <div style="margin:30px 0"><img src="http://127.0.0.1:8000{{=it.userimage}}" style="width:50px;height:50px;float:left;margin-left:40px;border-radius:50%;" />
+            <h4 style="float:left;margin:0 40px">{{=it.name}} :</h4> 这张照片拍的真棒！
+            <p style="margin-left:130px;color:gray">时间：{{=it.id}}</p></div>
+            <hr />
+            <div style="margin-left:140px;margin-bottom:70px;height:100px">
+                <input  style="width:70%;background:#8080802e;outline:none;border:none;border-radius:8px;height:50px;padding-left:20px"/><button style="margin-left:30px;padding:10px 20px">评论</button>
+            </div>
+            </div>
+            </div>
+
+
 </script>
 <!-- 发布作品 -->
 <script>
@@ -329,6 +431,13 @@
             }
         }
     })
+    }
+    function read(that){
+     
+        datajson =textjson[$(that).attr("value")]
+        console.log(datajson)
+        data=doT.template(document.getElementById("xiang-modal").innerHTML);//生成模板方法
+        document.getElementById("xiang-content").innerHTML=data(datajson);//数据渲染
     }
 </script>
 </html>
